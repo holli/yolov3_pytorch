@@ -1,3 +1,13 @@
+fastai
+weights
+data
+.vscode
+*~
+
+
+
+# Github defaults
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
