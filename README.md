@@ -1,6 +1,6 @@
 # Yolov3_pytorch
 
-Yolov3 (+tiny) pythonic pytorch implementation.
+Yolov3 (+tiny) object oriented pythonic pytorch implementation.
 
 Tested with pytorch 0.4.0 and python>3.5. Some basic tests are included in [tests](https://github.com/holli/yolov3_pytorch/tree/master/test) folder.
 

@@ -28,6 +28,7 @@ class IntegrationTinyYoloTest(unittest.TestCase):
 
         all_boxes = model.predict_img(img_torch)[0]
         self.assertTrue(len(all_boxes) > 2, "Should detect something in img")
+        self.assertTrue(len(all_boxes) < 20, "Should not detect too much in img")
 
         nms_boxes = utils.nms(all_boxes, .4)
         persons = [a for a in nms_boxes if a[-1] == 0]

@@ -170,8 +170,8 @@ def plot_img_detections(img, result_boxes, **kwargs):
         classes, boxes = [], []
     extras = ["{:.2f} ({:.2f})".format(b[4], b[5]) for b in result_boxes]
     print(classes)
-    print(boxes)
-    print(extras)
+    # print(boxes)
+    # print(extras)
     return plot_img_boxes(img, boxes, classes, extras=extras, **kwargs)
 
 

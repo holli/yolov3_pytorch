@@ -11,8 +11,10 @@ from .yolo_layer import *
 class ConvBN(nn.Module):
     "convolutional layer then batchnorm"
 
-    def __init__(self, ch_in, ch_out, kernel_size = 3, stride=1, padding=0):
+    # def __init__(self, ch_in, ch_out, kernel_size = 3, stride=1, padding=0):
+    def __init__(self, ch_in, ch_out, kernel_size = 3, stride=1, padding=None):
         super().__init__()
+        if padding is None: padding = (kernel_size - 1) // 2 # we should never need to set padding
         self.conv = nn.Conv2d(ch_in, ch_out, kernel_size=kernel_size, stride=stride, padding=padding, bias=False)
         self.bn = nn.BatchNorm2d(ch_out, momentum=0.01)
         self.relu = nn.LeakyReLU(0.1, inplace=True)
@@ -41,16 +43,17 @@ class Upsample(nn.Module):
         super().__init__()
         self.stride = stride
     def forward(self, x):
-        stride = self.stride
+        # stride = self.stride
         assert(x.data.dim() == 4)
-        B = x.data.size(0)
-        C = x.data.size(1)
-        H = x.data.size(2)
-        W = x.data.size(3)
-        ws = stride
-        hs = stride
-        x = x.view(B, C, H, 1, W, 1).expand(B, C, H, hs, W, ws).contiguous().view(B, C, H*hs, W*ws)
-        return x
+        return nn.Upsample(scale_factor=self.stride, mode='nearest')(x)
+        # B = x.data.size(0)
+        # C = x.data.size(1)
+        # H = x.data.size(2)
+        # W = x.data.size(3)
+        # ws = stride
+        # hs = stride
+        # x = x.view(B, C, H, 1, W, 1).expand(B, C, H, hs, W, ws).contiguous().view(B, C, H*hs, W*ws)
+        # return x
 
 class SplittedBackbone(nn.Module):
     def __init__(self, layers_list, id):   
@@ -70,9 +73,6 @@ class TinyYolov3(nn.Module):
 
     def get_loss_layers(self):
         return [self.yolo_0, self.yolo_1]
-    def getLossLayers(self):
-        return self.get_loss_layers()
-        # return [self.yolo_0_org, self.yolo_1_org]
 
     def __init__(self, num_classes, use_wrong_previous_anchors=False):
         super().__init__()
@@ -84,10 +84,6 @@ class TinyYolov3(nn.Module):
         self.skip_backbone = False
         
         input_channels = 3
-        # self.anchors = [10,14,  23,27,  37,58,  81,82,  135,169,  344,319]
-        self.anchors_per_region = 3
-        # self.width = 416
-        # self.height = 416
         
         self.backbone_layer_list = OrderedDict([
             ('0_convbatch',     ConvBN(input_channels, 16, 3, 1, 1)),
@@ -109,9 +105,10 @@ class TinyYolov3(nn.Module):
 
         self.backbone = SplittedBackbone(self.backbone_layer_list, 9)
 
+        anchors_per_region = 3
         self.yolo_0_pre = nn.Sequential(OrderedDict([
             ('14_convbatch',    ConvBN(256, 512, 3, 1, 1)),
-            ('15_conv',         nn.Conv2d(512, self.anchors_per_region*(5+self.num_classes), 1, 1, 0)),
+            ('15_conv',         nn.Conv2d(512, anchors_per_region*(5+self.num_classes), 1, 1, 0)),
             # ('16_yolo',         YoloLayer()),
         ]))
         self.yolo_0 = YoloLayer(anchors=[(81.,82.), (135.,169.), (344.,319.)], stride=32, num_classes=num_classes)
@@ -123,7 +120,7 @@ class TinyYolov3(nn.Module):
 
         self.yolo_1_pre = nn.Sequential(OrderedDict([
             ('19_convbatch',    ConvBN(128+256, 256, 3, 1, 1)),
-            ('20_conv',         nn.Conv2d(256, self.anchors_per_region*(5+self.num_classes), 1, 1, 0)),
+            ('20_conv',         nn.Conv2d(256, anchors_per_region*(5+self.num_classes), 1, 1, 0)),
             # ('21_yolo',         YoloLayer()),
         ]))
         
