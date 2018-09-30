@@ -6,7 +6,7 @@ import torch.nn.functional as F
 
 import importlib
 from .yolo_layer import *
-from .tiny_yolo import *
+from .yolov3_base import *
 
 class Darknet(nn.Module):
     def __init__(self, num_blocks, start_nf=32):

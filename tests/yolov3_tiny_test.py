@@ -7,15 +7,15 @@ from PIL import Image
 
 from yolov3_pytorch import utils
 from yolov3_pytorch.yolo_layer import *
-from yolov3_pytorch.tiny_yolo import *
+from yolov3_pytorch.yolov3_tiny import *
 
 # import pdb; pdb.set_trace()
 
-class IntegrationTinyYoloTest(unittest.TestCase):
+class IntegrationYolov3TinyTest(unittest.TestCase):
     
     def test_basic_process(self):
-        model = TinyYolov3(num_classes=80, use_wrong_previous_anchors=True)
-        model.load_state_dict(torch.load('data/models/tiny_yolo_converted.h5'))
+        model = Yolov3Tiny(num_classes=80, use_wrong_previous_anchors=True)
+        model.load_state_dict(torch.load('data/models/yolov3_tiny_coco_01.h5'))
         _ = model.eval() # .cuda()
 
         sz = 416
@@ -25,7 +25,7 @@ class IntegrationTinyYoloTest(unittest.TestCase):
         img_torch = utils.image2torch(img_resized)
 
         output_all = model(img_torch)
-        self.assertEqual(len(output_all), 2, "Basic output should be for two yolo layers")
+        self.assertEqual(len(output_all), 2, "Basic output should be for 2 yolo layers")
         self.assertEqual(list(output_all[0].shape), [1, 255, 13, 13], "Basic output shape should be correct")
 
         all_boxes = model.predict_img(img_torch)[0]
