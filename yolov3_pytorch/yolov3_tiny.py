@@ -68,25 +68,26 @@ class Yolov3Tiny(Yolov3Base):
     #     return self.boxes_from_output(outputs, conf_thresh)
 
 
-    def forward_yolo(self, x_b_0, x_b_full):
-        x_yolo_0 = self.yolo_0_pre(x_b_full)
+    def forward_yolo(self, xb):
+        x_b_0, x_b_full = xb[0], xb[1]
+        y0 = self.yolo_0_pre(x_b_full)
 
         x_up = self.up_1(x_b_full)
         x_up = torch.cat((x_up, x_b_0), 1)
-        x_yolo_1 = self.yolo_1_pre(x_up)
+        y1 = self.yolo_1_pre(x_up)
 
-        return [x_yolo_0, x_yolo_1]
+        return y0, y1
 
 
-    def forward(self, *x):
-        #x_b_0, x_b_full = self.backbone(x) if not self.skip_backbone else x[0], x[1]
-        if (isinstance(x, tuple) or isinstance(x, list)) and len(x) == 2:
-            x_b_0, x_b_full = x[0], x[1]
-        else:
-            x_b_0, x_b_full = self.backbone(x[0])
+    # def forward(self, *x):
+    #     #x_b_0, x_b_full = self.backbone(x) if not self.skip_backbone else x[0], x[1]
+    #     if (isinstance(x, tuple) or isinstance(x, list)) and len(x) == 2:
+    #         x_b_0, x_b_full = x[0], x[1]
+    #     else:
+    #         x_b_0, x_b_full = self.backbone(x[0])
 
-        out = self.forward_yolo(x_b_0, x_b_full)
-        return out
+    #     out = self.forward_yolo(x_b_0, x_b_full)
+    #     return out
 
 
     # def freeze_backbone(self, requires_grad=False):

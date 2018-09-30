@@ -17,6 +17,15 @@ class Yolov3Base(nn.Module, metaclass=ABCMeta):
     def get_loss_layers(self):
         return [self.yolo_0, self.yolo_1]
 
+    def forward_backbone(self, x):
+        return self.backbone(x)
+
+    def forward(self, x):
+        shape = x.shape
+        assert shape[1] == 3 and shape[2] % 32 == 0 and shape[3] % 32 == 0, f"Tensor shape should be [bs, 3, x*32, y*32], was {shape}"
+        xb = self.forward_backbone(x)
+        return self.forward_yolo(xb)
+
     def boxes_from_output(self, outputs, conf_thresh=0.25):
         all_boxes = [[] for j in range(outputs[0].size(0))]
         for i, layer in enumerate(self.get_loss_layers()):

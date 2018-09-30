@@ -23,42 +23,29 @@ class Yolov3(Yolov3Base):
         self.yolo_2_c = ConvBN(256, 128, 1)
         self.yolo_2_prep = Yolov3UpsamplePrep([128, 256], 256+128, anchors_per_region*(5+num_classes))
         self.yolo_2 = YoloLayer(anchors=[(10., 13.), (16., 30.), (33., 23.)], stride=8, num_classes=num_classes)
-        
 
     def get_loss_layers(self):
         return [self.yolo_0, self.yolo_1, self.yolo_2]
-        
 
-    def forward(self, x, debug=False):
-        xb = self.backbone(x)
-        # if debug: print_tensor_shapes(xb)
-        
+    def forward_yolo(self, xb):
         x, y0 = self.yolo_0_pre(xb[-1])
-        # if debug: print_tensor_shapes([x, y0])
-        
-        # if debug: print("now y1")
-        x = self.yolo_1_c(x)
-        # if debug: print_tensor_shapes([x])
-        x = nn.Upsample(scale_factor=2, mode='nearest')(x)
-        # if debug: print_tensor_shapes([x])
-        x = torch.cat([x, xb[-2]], 1)
-        # if debug: print_tensor_shapes([x])
-        x, y1 = self.yolo_1_prep(x)
-        # if debug: print_tensor_shapes([x, y1])
 
-        # if debug: print("now y2")
-        x = self.yolo_2_c(x)
-        # if debug: print_tensor_shapes([x])
+        x = self.yolo_1_c(x)
         x = nn.Upsample(scale_factor=2, mode='nearest')(x)
-        # if debug: print_tensor_shapes([x])
+        x = torch.cat([x, xb[-2]], 1)
+        x, y1 = self.yolo_1_prep(x)
+
+        x = self.yolo_2_c(x)
+        x = nn.Upsample(scale_factor=2, mode='nearest')(x)
         x = torch.cat([x, xb[-3]], 1)
-        # if debug: print_tensor_shapes([x])
         x, y2 = self.yolo_2_prep(x)
-        # if debug: print_tensor_shapes([x, y2])
         
         return y0, y1, y2
 
 
+    # def forward(self, x):
+    #     xb = self.forward_backbone(x)
+    #     return self.forward_yolo(xb)
 
     # def boxes_from_output(self, outputs, conf_thresh=0.25):
     #     all_boxes = [[] for j in range(outputs[0].size(0))]
