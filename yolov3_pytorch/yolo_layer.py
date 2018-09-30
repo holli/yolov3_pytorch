@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .utils import bbox_iou, multi_bbox_ious, convert2cpu, convert2cpu_long
+from .utils import bbox_iou, multi_bbox_ious
 
 
 class YoloLayer(nn.Module):

@@ -9,6 +9,8 @@ from yolov3_pytorch import utils
 from yolov3_pytorch.yolo_layer import *
 from yolov3_pytorch.tiny_yolo import *
 
+# import pdb; pdb.set_trace()
+
 class IntegrationTinyYoloTest(unittest.TestCase):
     
     def test_basic_process(self):
@@ -32,6 +34,13 @@ class IntegrationTinyYoloTest(unittest.TestCase):
 
         nms_boxes = utils.nms(all_boxes, .4)
         persons = [a for a in nms_boxes if a[-1] == 0]
+        
         self.assertEqual(1, len(persons), "Should detect one person in img")
+
+        # If there is a little difference it might not be a bug, but its here to alert.
+        # You can comment away tests that are failing if things are otherwise correct
+        self.assertEqual(9, len(all_boxes), "Something has changed in predictions")
+        previous_person = [0.35972878336906433, 0.5600799322128296, 0.15276280045509338, 0.6586271524429321, 0.9670860767364502, 1.0, 0]
+        self.assertEqual(previous_person, persons[0], "Something has changed in predictions")
 
 

@@ -115,11 +115,11 @@ def multi_bbox_ious(boxes1, boxes2, x1y1x2y2=True):
     return carea/uarea
 
 
-def convert2cpu(gpu_matrix):
-    return torch.FloatTensor(gpu_matrix.size()).copy_(gpu_matrix)
+# def convert2cpu(gpu_matrix):
+#     return torch.FloatTensor(gpu_matrix.size()).copy_(gpu_matrix)
 
-def convert2cpu_long(gpu_matrix):
-    return torch.LongTensor(gpu_matrix.size()).copy_(gpu_matrix)
+# def convert2cpu_long(gpu_matrix):
+#     return torch.LongTensor(gpu_matrix.size()).copy_(gpu_matrix)
 
 
 
