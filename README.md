@@ -10,9 +10,12 @@ There are some good pytorch implementations previously but they were using origi
 
 Download converted weights from **TODO**
 
-# Notebooks
+# Usage
 
-
+- https://github.com/holli/yolov3_pytorch/blob/master/notebooks/basic_prediction.ipynb
+  - show's basic loading of model and prediction
+- https://github.com/holli/yolov3_pytorch/blob/master/notebooks/eval_coco_map.ipynb
+  - map metric on coco evaluation data set. Just to make sure that this implementation is close enough to original implementation
 
 # Other implementations
 
