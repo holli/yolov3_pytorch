@@ -118,6 +118,7 @@ def multi_bbox_ious(boxes1, boxes2, x1y1x2y2=True):
 ###################################################################
 ## Plotting helpers
 
+# e.g. plot_multi_detections(img_tensor, model.predict_img(img_tensor))
 def plot_multi_detections(imgs, results, figsize=None, **kwargs):
     if not figsize:
         figsize = (12, min(math.ceil(len(imgs)/3)*4, 30))
@@ -151,9 +152,7 @@ def plot_multi_detections(imgs, results, figsize=None, **kwargs):
     plt.tight_layout()
 
 
-def plot_img_detections(img, result_boxes, **kwargs):        
-    #b = np.array([[b.item() for b in arr] for arr in result_boxes])
-    #img_tensor = img_tensor[0]
+def plot_img_detections(img, result_boxes, **kwargs):
     b = np.array(result_boxes)
     if len(b) > 0:
         classes = b[:, -1].astype(int)
@@ -161,9 +160,6 @@ def plot_img_detections(img, result_boxes, **kwargs):
     else:
         classes, boxes = [], []
     extras = ["{:.2f} ({:.2f})".format(b[4], b[5]) for b in result_boxes]
-    # print(classes)
-    # print(boxes)
-    # print(extras)
     return plot_img_boxes(img, boxes, classes, extras=extras, **kwargs)
 
 
@@ -185,7 +181,7 @@ def plot_img_data(batch, rows=2, figsize=(12, 8), **kwargs):
     plt.tight_layout()
 
 
-def plot_img_boxes(img, boxes, classes, extras=None, plt_ax=None, figsize=None, class_names=None, real_pixels=False):
+def plot_img_boxes(img, boxes, classes, extras=None, plt_ax=None, figsize=None, class_names=None, real_pixels=False, box_centered=True):
     if not plt_ax:
         _, plt_ax = plt.subplots(figsize=figsize)
     colors = np.array([[1,0,1],[0,0,1],[0,1,1],[0,1,0],[1,1,0],[1,0,0]])
@@ -205,7 +201,7 @@ def plot_img_boxes(img, boxes, classes, extras=None, plt_ax=None, figsize=None, 
     else:
         raise(f"Unkown type for image: {type(img)}")
 
-    if not real_pixels and len(boxes) > 0:
+    if len(boxes) > 0 and not real_pixels:
         boxes[:, 0] *= width; boxes[:, 2] *= width
         boxes[:, 1] *= height; boxes[:, 3] *= height
 
@@ -216,8 +212,12 @@ def plot_img_boxes(img, boxes, classes, extras=None, plt_ax=None, figsize=None, 
 
         color = colors[class_id%len(colors)]
 
-        x, y = (b[0]-b[2]/2, b[1]-b[3]/2)
-        w, h = (b[2], b[3])
+        if box_centered:
+            x, y = (b[0]-b[2]/2, b[1]-b[3]/2)
+            w, h = (b[2], b[3])
+        else:
+            x, y = b[0], b[1]
+            w, h = b[2], b[3]
 
         patch = plt_ax.add_patch(patches.Rectangle([x, y], w, h, fill=False, edgecolor=color, lw=2))
         patch.set_path_effects([patheffects.Stroke(linewidth=3, foreground='black', alpha=0.5), patheffects.Normal()])

@@ -1,9 +1,6 @@
-from collections import OrderedDict, Iterable, defaultdict
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-import importlib
 from .yolo_layer import *
 from .yolov3_base import *
 
@@ -41,28 +38,6 @@ class Yolov3(Yolov3Base):
         x, y2 = self.yolo_2_prep(x)
         
         return y0, y1, y2
-
-
-    # def forward(self, x):
-    #     xb = self.forward_backbone(x)
-    #     return self.forward_yolo(xb)
-
-    # def boxes_from_output(self, outputs, conf_thresh=0.25):
-    #     all_boxes = [[] for j in range(outputs[0].size(0))]
-    #     for i, layer in enumerate(self.get_loss_layers()):
-    #         layer_boxes = layer.get_region_boxes(outputs[i], conf_thresh=conf_thresh)
-    #         for j, layer_box in enumerate(layer_boxes):
-    #             all_boxes[j] += layer_box
-
-    #     return all_boxes
-
-
-    # def predict_img(self, imgs, conf_thresh=0.25):
-    #     self.eval()
-    #     if len(imgs.shape) == 3: imgs = imgs.unsqueeze(-1) 
-        
-    #     outputs = self.forward(imgs)
-    #     return self.boxes_from_output(outputs, conf_thresh)
 
 
 ###################################################################
