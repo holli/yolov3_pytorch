@@ -4,7 +4,7 @@ Yolov3 (+tiny) object detection - object oriented pythonic pytorch implementatio
 
 Tested with pytorch 0.4.0 and python>3.5. Some basic tests are included in [tests](https://github.com/holli/yolov3_pytorch/tree/master/test) folder.
 
-This repo has a goal to have simple pythonic object oriented implementation that can be easily used as it is and also easy to modify the model.
+This repo has a goal to have simple pythonic object oriented implementation that can be easily used as it is and also easy to train or modify the model.
 
 See https://pjreddie.com/darknet/yolo/ for better explanation of how yolov3 object detection system differs from others.
 
@@ -18,6 +18,8 @@ Pretrained weights are available at: **http://www.ollihuotari.com/data/yolov3_py
   - show's basic loading of model and prediction
 - **https://github.com/holli/yolov3_pytorch/blob/master/notebooks/eval_coco_map.ipynb**
   - map metric on coco evaluation data set. Just to make sure that this implementation is close enough to original implementation
+- **https://github.com/holli/yolov3_pytorch/blob/master/notebooks/train_voc.ipynb**
+  - training on a new dataset. Using voc dataset for an example.
 
 # Support / Commits
 
