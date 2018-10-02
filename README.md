@@ -19,9 +19,13 @@ Pretrained weights are available at: **http://www.ollihuotari.com/data/yolov3_py
 - **https://github.com/holli/yolov3_pytorch/blob/master/notebooks/eval_coco_map.ipynb**
   - map metric on coco evaluation data set. Just to make sure that this implementation is close enough to original implementation
 
+# Support / Commits
+
+Submit suggestions or feature requests as a GitHub Issue or Pull Request. Preferably create a test to show whats happening and what should happen.
+
 # Other Implementations
 
-There are some good pytorch implementations previously but they were using original cfg files to create the model. This works well but it's harder to modify and test other approaches. Some of them didn't include yolov3-tiny model or didn't work with using images of different sizes (e.g. 608 pixel sizes instead of default 416). Some better ones include:
+There are some good pytorch implementations previously but many of them were using original cfg files to create the model. This works well but it's harder to modify and test other approaches. Some of them didn't include yolov3-tiny model or didn't work with using images of different sizes (e.g. 608 pixel sizes instead of default 416). Some nicer ones include:
 
 - https://github.com/marvis/pytorch-yolo3
 - https://github.com/andy-yun/pytorch-0.4-yolov3

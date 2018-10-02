@@ -54,7 +54,7 @@ class Yolov3Tiny(Yolov3Base):
         x_up = torch.cat((x_up, x_b_0), 1)
         y1 = self.yolo_1_pre(x_up)
 
-        return y0, y1
+        return [y0, y1]
 
 
 ###################################################################

@@ -163,20 +163,19 @@ def plot_img_detections(img, result_boxes, **kwargs):
     return plot_img_boxes(img, boxes, classes, extras=extras, **kwargs)
 
 
-def plot_img_data(batch, rows=2, figsize=(12, 8), **kwargs):
-    # print(batch[0].shape, batch[1].shape)
+def plot_img_data(x, y, rows=2, figsize=(12, 8), **kwargs):
     _, axes = plt.subplots(rows, 3, figsize=figsize)
 
     for j, ax in enumerate(axes.flat):
-        if j >= len(batch[1]):
+        if j >= len(y):
             break
-        targets = batch[1][j]
-        if isinstance(batch[0], torch.Tensor):
+        targets = y[j]
+        if isinstance(targets, torch.Tensor):
             targets = targets.clone().reshape(-1,5)
             classes = targets[:, 0].cpu().numpy().astype(int)
         else:
             classes = targets[:, 0].astype(int)
-        plot_img_boxes(batch[0][j], targets[:, 1:], classes, plt_ax=ax, **kwargs)
+        plot_img_boxes(x[j], targets[:, 1:], classes, plt_ax=ax, **kwargs)
         
     plt.tight_layout()
 

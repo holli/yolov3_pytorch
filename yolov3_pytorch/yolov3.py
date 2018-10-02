@@ -37,7 +37,7 @@ class Yolov3(Yolov3Base):
         x = torch.cat([x, xb[-3]], 1)
         x, y2 = self.yolo_2_prep(x)
         
-        return y0, y1, y2
+        return [y0, y1, y2]
 
 
 ###################################################################

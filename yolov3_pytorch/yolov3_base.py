@@ -42,37 +42,45 @@ class Yolov3Base(nn.Module, metaclass=ABCMeta):
         outputs = self.forward(imgs)
         return self.boxes_from_output(outputs, conf_thresh)
 
-    # def freeze_backbone(self, requires_grad=False):
-    #     for _, p in self.backbone.named_parameters():
-    #         p.requires_grad = requires_grad
-    # def unfreeze(self):
-    #     for _, p in self.named_parameters():
-    #         p.requires_grad = True
-    # def freeze_info(self, print_all=False):
-    #     d = defaultdict(set)
-    #     for name, param in self.named_parameters():
-    #         if print_all:
-    #             print(f"{name}: {param.requires_grad}")
-    #         else:
-    #             d[name.split('.')[0]].add(param.requires_grad)
-    #     if not print_all:
-    #         for k,v in d.items():
-    #             print(k, ': ', v)        
+    def freeze_backbone(self, requires_grad=False):
+        for _, p in self.backbone.named_parameters():
+            p.requires_grad = requires_grad
+    def unfreeze(self):
+        for _, p in self.named_parameters():
+            p.requires_grad = True
+    def freeze_info(self, print_all=False):
+        d = defaultdict(set)
+        print("Layer: param.requires_grad")
+        for name, param in self.named_parameters():
+            if print_all:
+                print(f"{name}: {param.requires_grad}")
+            else:
+                d[name.split('.')[0]].add(param.requires_grad)
+        if not print_all:
+            for k,v in d.items():
+                print(k, ': ', v)        
 
-    # def load_only_backbone(self, h5_path):
-    #     state_dict = torch.load(h5_path)
+    def load_backbone(self, h5_path):
+        state_old = self.state_dict()
+        state_new = torch.load(h5_path)
 
-    #     for k in list(state_dict.keys()):
-    #         if k.startswith(('yolo_0_pre.15', 'yolo_1_pre.20')):
-    #             del state_dict[k]
+        skipped_layers = []
+        for k in list(state_new.keys()):
+            if state_old[k].shape != state_new[k].shape:
+                skipped_layers.append(k)
+                del state_new[k]
+        
+        # for k in list(state_dict.keys()):
+        #     if k.startswith(('yolo_0_pre.15', 'yolo_1_pre.20')):
+        #         del state_dict[k]
 
-    #     # Renaming some keys if needed for compatibility
-    #     # state_dict = type(state_dict_org)()
-    #     # for k_old in list(state_dict.keys()):
-    #     #     k_new = k_old.replace('backend', 'backbone')
-    #     #     state_dict[k_new] = state_dict_org[k_old]
+        # Renaming some keys if needed for compatibility
+        # state_dict = type(state_dict_org)()
+        # for k_old in list(state_dict.keys()):
+        #     k_new = k_old.replace('backend', 'backbone')
+        #     state_dict[k_new] = state_dict_org[k_old]
 
-    #     return self.load_state_dict(state_dict, strict=False)
+        return self.load_state_dict(state_new, strict=False), skipped_layers
 
 
 ###################################################################
